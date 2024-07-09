@@ -1,13 +1,13 @@
-import express, { Express, Request, Response } from "express";
+import express, { Express, Request, Response } from 'express'
 const app: Express = express()
 
-const hostname = "localhost";
-const post = 8000;
+const hostname = 'localhost'
+const post = 8000
 
-app.get("/", function (req: Request, res: Response) {
-  res.send("Hello World");
-});
+app.get('/', function (req: Request, res: Response) {
+  res.send('Hello World')
+})
 
 app.listen(post, hostname, () => {
-  console.log(`I'm running server at http://${hostname}:${post}/`);
+  console.log(`I'm running server at http://${hostname}:${post}/`)
 })
