@@ -3,6 +3,7 @@ import { Request, Response, NextFunction } from 'express'
 import { StatusCodes } from 'http-status-codes'
 import ApiError from '~/utils/ApiError'
 
+
 const createNew = async (req: Request, res: Response, next: NextFunction) => {
     const correctCondition = Joi.object({
         title: Joi.string().required().min(3).max(50).trim().strict(),
