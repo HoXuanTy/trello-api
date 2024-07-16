@@ -14,8 +14,6 @@ export const errorHandlingMiddleware = (err: ApiError, req: Request, res: Respon
         stack: err.stack
     }
 
-    console.log('BUILD_MODE Dev', env.BUILD_MODE);
-    
     if (env.BUILD_MODE != 'dev') {
         delete responseError.stack
     }
