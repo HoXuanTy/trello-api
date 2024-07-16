@@ -21,9 +21,14 @@ interface Board {
     slug: string
 }
 
+const validateBeforeCreate = async (board: Board) => {
+    return await BOARD_COLLECTION_SCHEMA.validateAsync(board, { abortEarly: false })
+}
+
 const createNew = async (board: Board) => {
     try {
-        return await GET_DB().collection(BOARD_COLLECTION_NAME).insertOne(board)
+        const validatedBoard = await validateBeforeCreate(board)
+        return await GET_DB().collection(BOARD_COLLECTION_NAME).insertOne(validatedBoard)
     } catch (error) {
         throw error
     }
