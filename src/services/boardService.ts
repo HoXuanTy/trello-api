@@ -3,7 +3,7 @@ import { boardModel } from '~/models/boardModel'
 import { ObjectId } from 'mongodb'
 import ApiError from '~/utils/ApiError'
 import { StatusCodes } from 'http-status-codes'
-
+import { cloneDeep } from 'lodash'
 const createNew = async (reqBody: { title: string, description: string, slug: string }) => {
     try {
         const newBoard = {
@@ -23,7 +23,15 @@ const getDetails = async (boardId: ObjectId) => {
         if (!board) {
             throw new ApiError(StatusCodes.NOT_FOUND, 'Board not found!')
         }
-        return board
+
+        const resBoard = cloneDeep(board)
+        resBoard.columns.forEach((column: any) => {
+            column.cards = resBoard.cards.filter((card: any) => card.columnId.equals(column._id))
+        });
+
+        delete resBoard.cards
+        
+        return resBoard
     } catch (error) {
         throw error
     }

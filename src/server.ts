@@ -1,5 +1,5 @@
 import exitHook from 'async-exit-hook'
-import express, { Express, Request, Response, NextFunction } from 'express'
+import express, { Express } from 'express'
 import { CONNECT_DB, CLOSE_DB } from '~/config/mongodb'
 import { env } from '~/config/environment'
 import { corsOptions } from '~/config/cors'
