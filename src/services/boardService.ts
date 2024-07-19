@@ -4,6 +4,22 @@ import { ObjectId } from 'mongodb'
 import ApiError from '~/utils/ApiError'
 import { StatusCodes } from 'http-status-codes'
 import { cloneDeep } from 'lodash'
+
+interface Column {
+    _id: ObjectId
+    boardId: ObjectId
+    title: string
+    cardOrderIds: ObjectId[]
+    cards: Card[]
+}
+
+interface Card {
+    _id: ObjectId
+    title: string
+    boardId: ObjectId
+    columnId: ObjectId
+}
+
 const createNew = async (reqBody: { title: string, description: string, slug: string }) => {
     try {
         const newBoard = {
@@ -25,12 +41,12 @@ const getDetails = async (boardId: ObjectId) => {
         }
 
         const resBoard = cloneDeep(board)
-        resBoard.columns.forEach((column: any) => {
-            column.cards = resBoard.cards.filter((card: any) => card.columnId.equals(column._id))
-        });
+        resBoard.columns.forEach((column: Column) => {
+            column.cards = resBoard.cards.filter((card: Card) => card.columnId.equals(column._id))
+        })
 
         delete resBoard.cards
-        
+
         return resBoard
     } catch (error) {
         throw error
