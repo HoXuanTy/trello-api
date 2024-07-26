@@ -9,7 +9,7 @@ const mongoClientInstance = new MongoClient(env.MONGODB_URI, {
         strict: true,
         deprecationErrors: true
     }
-})
+}) 
 
 export const CONNECT_DB = async () => {
     await mongoClientInstance.connect()

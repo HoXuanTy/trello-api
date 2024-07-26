@@ -1,5 +1,4 @@
-import express, { Request, Response } from 'express'
-import { StatusCodes } from 'http-status-codes'
+import express from 'express'
 import { columnController } from '~/controllers/columnController'
 import { columnValidation } from '~/validations/columnValidation'
 
