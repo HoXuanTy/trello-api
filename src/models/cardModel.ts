@@ -29,7 +29,11 @@ const validateBeforeCreate = async (card: Card) => {
 const createNew = async (card: Card) => {
     try {
         const validatedCard = await validateBeforeCreate(card)
-        return await GET_DB().collection(CARD_COLLECTION_NAME).insertOne(validatedCard)
+        return await GET_DB().collection(CARD_COLLECTION_NAME).insertOne({
+            ...validatedCard,
+            boardId: new ObjectId(card.boardId),
+            columnId: new ObjectId(card.columnId)
+        })
     } catch (error) {
         throw error
     }
@@ -44,6 +48,7 @@ const findOneById = async (id: ObjectId) => {
         throw error
     }
 }
+
 
 
 export const cardModel = {
