@@ -21,14 +21,17 @@ interface Column {
     title: string
 }
 
-const validateBeforeCreate = async (column: Column) => {
+const validateBeforeCreate = async (column: Column): Promise<Column> => {
     return await COLUMN_COLLECTION_SCHEMA.validateAsync(column)
 }
 
 const createNew = async (column: Column) => {
     try {
         const validatedColumn = await validateBeforeCreate(column)
-        return await GET_DB().collection(COLUMN_COLLECTION_NAME).insertOne(validatedColumn)
+        return await GET_DB().collection(COLUMN_COLLECTION_NAME).insertOne({
+            ...validatedColumn,
+            boardId: new ObjectId(validatedColumn.boardId)
+        })
     } catch (error) {
         throw error
     }

@@ -1,5 +1,5 @@
 import Joi from 'joi'
-import { ObjectId } from 'mongodb'
+import { ObjectId, PushOperator } from 'mongodb'
 import { GET_DB } from '~/config/mongodb'
 import { OBJECT_ID_RULE, OBJECT_ID_RULE_MESSAGE } from '~/utils/validators'
 import { columnModel } from './columnModel'
@@ -23,6 +23,12 @@ interface Board {
     slug: string
 }
 
+interface Column {
+    _id: ObjectId
+    boardId: ObjectId
+    title: string
+}
+
 const validateBeforeCreate = async (board: Board) => {
     return await BOARD_COLLECTION_SCHEMA.validateAsync(board, { abortEarly: false })
 }
@@ -38,7 +44,7 @@ const createNew = async (board: Board) => {
 
 const findOneById = async (id: ObjectId) => {
     try {
-        return await GET_DB().collection(BOARD_COLLECTION_NAME).findOne({
+        return await GET_DB().collection<Board>(BOARD_COLLECTION_NAME).findOne({
             _id: id
         })
     } catch (error) {
@@ -48,7 +54,7 @@ const findOneById = async (id: ObjectId) => {
 
 const getDetails = async (id: ObjectId) => {
     try {
-       const board = await GET_DB().collection(BOARD_COLLECTION_NAME).aggregate([
+        const board = await GET_DB().collection(BOARD_COLLECTION_NAME).aggregate([
             {
                 $match: { _id: id, _destroy: false }
             },
@@ -76,10 +82,23 @@ const getDetails = async (id: ObjectId) => {
     }
 }
 
+const pushColumnOrderIds = async (column: Column) => {
+    try {
+        return await GET_DB().collection(BOARD_COLLECTION_NAME).findOneAndUpdate(
+            { _id: new ObjectId(column.boardId) },
+            { $push: { columnOrderIds: new ObjectId(column._id) } as PushOperator<Document> },
+            { returnDocument: "after" }
+        )
+    } catch (error) {
+        throw error
+    }
+}
+
 export const boardModel = {
     BOARD_COLLECTION_NAME,
     BOARD_COLLECTION_SCHEMA,
     createNew,
     findOneById,
-    getDetails
+    getDetails,
+    pushColumnOrderIds
 }
