@@ -1,5 +1,5 @@
 import { slugify } from '~/utils/formatters'
-import { boardModel } from '~/models/boardModel'
+import { Board, boardModel } from '~/models/boardModel'
 import { ObjectId } from 'mongodb'
 import ApiError from '~/utils/ApiError'
 import { StatusCodes } from 'http-status-codes'
@@ -20,7 +20,7 @@ interface Card {
     columnId: ObjectId
 }
 
-const createNew = async (reqBody: { title: string, description: string, slug: string }) => {
+const createNew = async (reqBody: Board) => {
     try {
         const newBoard = {
             ...reqBody,
@@ -52,8 +52,22 @@ const getDetails = async (boardId: ObjectId) => {
         throw error
     }
 }
+const update = async (boardId: ObjectId, reqBody: Board) => {
+    try {
+        const updateData = {
+            ...reqBody,
+            updatedAt: Date.now()
+        }
+        const updatedBoard = await boardModel.update(boardId, updateData)
+        return updatedBoard 
+    } catch (error) {
+        throw error
+    }
+}
+
 
 export const boardService = {
     createNew,
-    getDetails
+    getDetails,
+    update
 }
