@@ -5,6 +5,19 @@ import { OBJECT_ID_RULE, OBJECT_ID_RULE_MESSAGE } from '~/utils/validators'
 import { columnModel } from './columnModel'
 import { cardModel } from './cardModel'
 
+export interface Board {
+    title: string,
+    description: string,
+    slug: string,
+    columnOrderIds: []
+}
+
+interface Column {
+    _id: ObjectId
+    boardId: ObjectId
+    title: string
+}
+
 const BOARD_COLLECTION_NAME = 'boards'
 const BOARD_COLLECTION_SCHEMA = Joi.object({
     title: Joi.string().required().min(3).max(50).trim().strict(),
@@ -17,17 +30,8 @@ const BOARD_COLLECTION_SCHEMA = Joi.object({
     _destroy: Joi.boolean().default(false)
 })
 
-interface Board {
-    title: string,
-    description: string,
-    slug: string
-}
-
-interface Column {
-    _id: ObjectId
-    boardId: ObjectId
-    title: string
-}
+// Array fields are not allowed to be updated
+const INVALID_UPDATED_FIELDS = ['_id', 'createdAt']
 
 const validateBeforeCreate = async (board: Board) => {
     return await BOARD_COLLECTION_SCHEMA.validateAsync(board, { abortEarly: false })
@@ -82,6 +86,25 @@ const getDetails = async (id: ObjectId) => {
     }
 }
 
+const update = async (id: ObjectId, updateData: Board) => {
+    try {
+        //Filter fields that are not allowed to be updated
+        Object.keys(updateData).forEach((fieldName) => {
+            if(INVALID_UPDATED_FIELDS.includes(fieldName)) {
+                delete updateData[fieldName as keyof Board]
+            }
+        })
+        const updatedBoard = await GET_DB().collection(BOARD_COLLECTION_NAME).findOneAndUpdate(
+            { _id: id },
+            { $set: updateData },
+            { returnDocument: "after" }
+        )
+        return updatedBoard
+    } catch (error) {
+        throw error
+    }
+}
+
 const pushColumnOrderIds = async (column: Column) => {
     try {
         return await GET_DB().collection(BOARD_COLLECTION_NAME).findOneAndUpdate(
@@ -100,5 +123,6 @@ export const boardModel = {
     createNew,
     findOneById,
     getDetails,
-    pushColumnOrderIds
+    pushColumnOrderIds,
+    update
 }

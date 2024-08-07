@@ -11,8 +11,6 @@ interface Column {
 
 const createNew = async (column: Column) => {
     try {
-        console.log('column', column);
-
         const createdColumn = await columnModel.createNew(column)
         const getNewColumn = await columnModel.findOneById(createdColumn.insertedId) as Column
 
