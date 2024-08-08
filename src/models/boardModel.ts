@@ -4,6 +4,7 @@ import { GET_DB } from '~/config/mongodb'
 import { OBJECT_ID_RULE, OBJECT_ID_RULE_MESSAGE } from '~/utils/validators'
 import { columnModel } from './columnModel'
 import { cardModel } from './cardModel'
+import { INVALID_UPDATED_FIELDS } from '~/utils/constants'
 
 export interface Board {
     title: string,
@@ -30,8 +31,7 @@ const BOARD_COLLECTION_SCHEMA = Joi.object({
     _destroy: Joi.boolean().default(false)
 })
 
-// Array fields are not allowed to be updated
-const INVALID_UPDATED_FIELDS = ['_id', 'createdAt']
+
 
 const validateBeforeCreate = async (board: Board) => {
     return await BOARD_COLLECTION_SCHEMA.validateAsync(board, { abortEarly: false })
