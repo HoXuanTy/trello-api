@@ -5,9 +5,10 @@ import { INVALID_UPDATED_FIELDS } from '~/utils/constants'
 import { OBJECT_ID_RULE, OBJECT_ID_RULE_MESSAGE } from '~/utils/validators'
 
 interface Column {
-    _id: ObjectId
-    boardId: ObjectId
-    title: string
+    boardId?: ObjectId
+    title?: string
+    cardOrderIds?: ObjectId[]
+    updatedAt?: number
 }
 
 interface Card {
@@ -44,16 +45,21 @@ const createNew = async (column: Column) => {
     }
 }
 
-const update = async (columnId: ObjectId, column: Column) => {
+const update = async (columnId: ObjectId, updateData: Column) => {
     try {
-        Object.keys(column).forEach(fieldName => {
+        Object.keys(updateData).forEach(fieldName => {
             if (INVALID_UPDATED_FIELDS.includes(fieldName)) {
-                delete column[fieldName as keyof Column]
+                delete updateData[fieldName as keyof Column]
             }
         })
+
+        if (updateData.cardOrderIds) {
+            updateData.cardOrderIds = updateData.cardOrderIds.map(_id => new ObjectId(_id))
+        }
+
         return await GET_DB().collection(COLUMN_COLLECTION_NAME).findOneAndUpdate(
-            { _id: columnId },
-            { $set: column },
+            { _id: new ObjectId(columnId) },
+            { $set: updateData },
             { returnDocument: "after" }
         )
     } catch (error) {

@@ -27,9 +27,18 @@ const update = async (req: Request, res: Response, next: NextFunction) => {
         next(error)
     }
 }
+const moveCardToDifferentColumn = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const result = await boardService.moveCardToDifferentColumn(req.body)
+        res.status(StatusCodes.OK).json(result)
+    } catch (error) {
+        next(error)
+    }
+}
 
 export const boardController = {
     createNew,
     getDetails,
-    update
+    update,
+    moveCardToDifferentColumn
 }

@@ -10,7 +10,7 @@ export interface Board {
     title: string,
     description: string,
     slug: string,
-    columnOrderIds: []
+    columnOrderIds: ObjectId[]
 }
 
 interface Column {
@@ -30,8 +30,6 @@ const BOARD_COLLECTION_SCHEMA = Joi.object({
     updatedAt: Joi.date().timestamp('javascript').default(null),
     _destroy: Joi.boolean().default(false)
 })
-
-
 
 const validateBeforeCreate = async (board: Board) => {
     return await BOARD_COLLECTION_SCHEMA.validateAsync(board, { abortEarly: false })
@@ -90,10 +88,15 @@ const update = async (id: ObjectId, updateData: Board) => {
     try {
         //Filter fields that are not allowed to be updated
         Object.keys(updateData).forEach((fieldName) => {
-            if(INVALID_UPDATED_FIELDS.includes(fieldName)) {
+            if (INVALID_UPDATED_FIELDS.includes(fieldName)) {
                 delete updateData[fieldName as keyof Board]
             }
         })
+
+        if (updateData.columnOrderIds) {
+            updateData.columnOrderIds = updateData.columnOrderIds.map(_id => new ObjectId(_id))
+        }
+
         const updatedBoard = await GET_DB().collection(BOARD_COLLECTION_NAME).findOneAndUpdate(
             { _id: id },
             { $set: updateData },
