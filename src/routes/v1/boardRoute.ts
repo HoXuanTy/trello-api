@@ -6,9 +6,7 @@ import { boardValidation } from '~/validations/boardValidation'
 const Router = express.Router()
 
 Router.route('/')
-    .get((req: Request, res: Response) => {
-        res.status(StatusCodes.OK).json({ message: 'GET: APIs get list board' })
-    })
+    .get(boardController.getBoards)
     .post(boardValidation.createNew, boardController.createNew)
 
 Router.route('/:id')
@@ -16,6 +14,6 @@ Router.route('/:id')
     .put(boardValidation.update, boardController.update)
 // Api support move between different columns
 Router.route('/supports/moving_card')
-        .put(boardValidation.moveCardToDifferentColumn, boardController.moveCardToDifferentColumn)
+    .put(boardValidation.moveCardToDifferentColumn, boardController.moveCardToDifferentColumn)
 export const boardRoute = Router
 
