@@ -22,6 +22,15 @@ interface Card {
     columnId: ObjectId
 }
 
+const getBoards = async () => {
+    try {
+        const boards = await boardModel.getBoards()
+        return boards
+    } catch (error) {
+        throw error
+    }
+}
+
 const createNew = async (reqBody: Board) => {
     try {
         const newBoard = {
@@ -101,5 +110,6 @@ export const boardService = {
     createNew,
     getDetails,
     update,
-    moveCardToDifferentColumn
+    moveCardToDifferentColumn,
+    getBoards
 }

@@ -35,6 +35,15 @@ const validateBeforeCreate = async (board: Board) => {
     return await BOARD_COLLECTION_SCHEMA.validateAsync(board, { abortEarly: false })
 }
 
+const getBoards = async () => {
+    try {
+        const boards = await GET_DB().collection<Board>(BOARD_COLLECTION_NAME).find({}).toArray()
+        return boards
+    } catch (error) {
+        throw error
+    }
+}
+
 const createNew = async (board: Board) => {
     try {
         const validatedBoard = await validateBeforeCreate(board)
@@ -127,5 +136,6 @@ export const boardModel = {
     findOneById,
     getDetails,
     pushColumnOrderIds,
-    update
+    update,
+    getBoards
 }
