@@ -25,7 +25,9 @@ const BOARD_COLLECTION_SCHEMA = Joi.object({
     slug: Joi.string().required().min(3).trim().strict(),
     description: Joi.string().required().min(3).max(255).trim().strict(),
     columnOrderIds: Joi.array().items(Joi.string().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE)).default([]),
+    backgroundImageLink: Joi.alternatives().try(Joi.string().uri(), Joi.string().pattern(/^#[0-9A-Fa-f]{6}$/)).required(),
 
+    isImage: Joi.boolean().default(true),
     createdAt: Joi.date().timestamp('javascript').default(Date.now),
     updatedAt: Joi.date().timestamp('javascript').default(null),
     _destroy: Joi.boolean().default(false)
