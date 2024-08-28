@@ -23,7 +23,7 @@ const BOARD_COLLECTION_NAME = 'boards'
 const BOARD_COLLECTION_SCHEMA = Joi.object({
     title: Joi.string().required().min(3).max(50).trim().strict(),
     slug: Joi.string().required().min(3).trim().strict(),
-    description: Joi.string().required().min(3).max(255).trim().strict(),
+    description: Joi.string().min(3).max(255).trim().strict().default(""),
     columnOrderIds: Joi.array().items(Joi.string().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE)).default([]),
     backgroundImageLink: Joi.alternatives().try(Joi.string().uri(), Joi.string().pattern(/^#[0-9A-Fa-f]{6}$/)).required(),
 

@@ -15,5 +15,7 @@ Router.route('/:id')
 // Api support move between different columns
 Router.route('/supports/moving_card')
     .put(boardValidation.moveCardToDifferentColumn, boardController.moveCardToDifferentColumn)
+
+
 export const boardRoute = Router
 
