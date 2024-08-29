@@ -8,7 +8,7 @@ import { OBJECT_ID_RULE, OBJECT_ID_RULE_MESSAGE } from '~/utils/validators'
 const createNew = async (req: Request, res: Response, next: NextFunction) => {
     const correctCondition = Joi.object({
         title: Joi.string().required().min(3).max(50).trim().strict(),
-        description: Joi.string().required().min(3).max(255).trim().strict(),
+        backgroundImageLink: Joi.alternatives().try(Joi.string().uri(), Joi.string().pattern(/^#[0-9A-Fa-f]{6}$/)).required(),
     })
 
     try {
